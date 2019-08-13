@@ -1,0 +1,50 @@
+upstream jenkins_server {
+	server 127.0.0.1:8080 fail_timeout=0;
+}
+
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+####mylines
+location / {
+	    # Adding basic authorisation to Nginx
+	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	    proxy_set_header Host $http_host;
+	    proxy_redirect off;
+
+	    if (!-f $request_filename) {
+	      proxy_pass http://jenkins_server;
+	      break;
+	    }
+	}
+}
+####mulines end
+
+
+
+
+
+#        root /var/www/html;
+
+#        index index.html index.htm index.nginx-debian.html;
+
+#        server_name localhost;
+
+#        location / {
+#                try_files $uri $uri/ =404;
+#        }
+
+#        location /redmine {
+#        rewrite ^/redmine(.*)$ http://redmine.craterzone.co.in/$1 redirect;
+#        }
+
+#}
+#}
+#server {
+#        listen 80;
+#        listen [::]:80;
+#
+#        server_name phabricator.localhost www.phabricator.localhost;
+#        return 301 http://phabricator.craterzone.co.in;
+#        }
